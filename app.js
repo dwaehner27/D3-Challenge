@@ -1,3 +1,62 @@
+// I worked with Erin Wills (TA) and the following people:  ______________
+// Remember to comment your code as we discuss it.  Commenting the code is required.
+// Prior to starting, make sure  you have already created and cloned your repo.
+
+
+
+// Refer to the pdf diagram to see the visual relationship of the code
+
+// Layout of this document
+// 1.  Data Exploration (always do this; understand its structure)
+// 2.  Define Functions (a and e used in page load, a through e used in click event)
+//      a.  xScale(hairData, chosenXAxis):  Scales data to svg width (var width defined in Section 3: Setup SVG )
+//              inputs:  (data like "hairData", an axis name like "hair_length")
+//              returns:  scaled data function
+//      b.  renderAxes(newXScale, xAxis): Uses the xScale function and sets new x-axis values
+//              inputs:  (function like "xLinearScale", object like xAxis)
+//              outputs:  returns new xAxis values
+//      c.  renderCircles(circlesGroup, newXScale, chosenXAxis):  Takes grouped elements like "circlesGroup" and scales data of a given axis and assigns it to the elements attribute "cx"
+//              inputs:  (grouped elements like "circlesGroup", a function like "xLinearScale", a specified axis name like "chosenXAxis" (ie "hair_length"))
+//              outputs:  returns updated circlesGroup elements with new x values
+//      d.  **new** rendertextCircles(textcirclesGroup, newXScale, chosenXAxis)
+//              inputs: (element like "textcirclesGroup", function like "xLinearScale", a specified axis name like "chosenXAxis" (ie "hair_length"))
+//              outputs:  returns an updated textcirclesGroup group element with new labels
+//      e.  updateToolTip:  updates circlesGroup with textbox messages
+//              inputs:  (a specified axis name like "chosenXAxis", elements like "circlesGroup")
+//              outputs:  calls the D3 function tip() that helps automate the tooltip message generation - returns html that is assigned to circlesGroup and has mouseover, mouseout interactivity
+// 3.  Setup SVG
+// 4.  BRING in Data and ADD Structure /layout
+//      a.  convert data to numericals
+//      b.  scale and assign axis
+//      c.  create circlsGroupAll elements and circlesGroup and textcirclesGroup elements
+//      d.  create 2 x-label groups, one y-label group, one albumGroup, one tooltip group
+// 5. ADD updates upon clicking axis text  
+//      a. Reassign these objects/elements with new values after click
+//          i.  xLinearScale
+//          ii. xAxis
+//          iii. circlesGroup
+//          iv. textcirclesGroup
+//          v.  circlesGroup/tooltip
+//          vi.  x-axis styling 
+
+
+
+
+
+// #######################  1.  Data Exploration  ################ //
+// CSV file shows that
+//  Data has following columns:  rockband, hair_length, num_hits, num_albums
+//  Once read by d3.csv then it is like an array of 20 objects as key-value pair format so I will need to use foreach or arrow functions to get arrays
+//  console.log(hairData) see below after d3.csv
+
+
+
+
+
+
+// #################### 2.  Define Function ###############//
+// function used for updating x-scale var upon click on axis label
+// scaling function: https://www.d3indepth.com/scales/
 function xScale(data, chosenXAxis) {
   // create scales
   var xLinearScale = d3.scaleLinear()
@@ -9,11 +68,6 @@ function xScale(data, chosenXAxis) {
   return xLinearScale;
 
 }
-funcation yLinearScale(){
-  
-var yLinearScale = d3.scaleLinear()
-  .domain([0, d3.max(data, d => d.healthcare)])
-  .range([height, 0]);
 
 // function used for updating xAxis var upon click on axis label
 function renderAxes(newXScale, xAxis) {
@@ -124,11 +178,10 @@ var chartGroup = svg.append("g")
 
 // Initial Params - includes any axis selection that has multiple options
 var chosenXAxis = "poverty";
-var chosenYAxis = "healthcare";
 
 
 // Retrieve data from the CSV file and execute everything below
-d3.csv("assets/data/data.csv").then(function(data, err) {
+d3.csv("data.csv").then(function(data, err) {
 if (err) throw err;
  
 // parse data - set values to numerical data types
@@ -194,14 +247,14 @@ var textcirclesGroup = circlesGroupAll
 var labelsGroup = chartGroup.append("g")
   .attr("transform", `translate(${width / 2}, ${height + 20})`);
 
-var povertyLabel = labelsGroup.append("text")
+var hairLengthLabel = labelsGroup.append("text")
   .attr("x", 0)
   .attr("y", 20)
   .attr("value", "poverty") // value to grab for event listener
   .classed("active", true)
   .text("Poverty Level");
 
-var ageLabel = labelsGroup.append("text")
+var albumsLabel = labelsGroup.append("text")
   .attr("x", 0)
   .attr("y", 40)
   .attr("value", "age") // value to grab for event listener
@@ -257,23 +310,20 @@ labelsGroup.selectAll("text")
 
       // changes classes to change bold text
       if (chosenXAxis === "age") {
-        ageLabel
+        albumsLabel
           .classed("active", true)
           .classed("inactive", false);
-        povertyLabel
+        hairLengthLabel
           .classed("active", false)
           .classed("inactive", true);
-
       }
-      else (chosenXAxis === "poverty") {
-        ageLabel
+      else {
+        albumsLabel
           .classed("active", false)
           .classed("inactive", true);
-        povertyLabel
+        hairLengthLabel
           .classed("active", true)
           .classed("inactive", false);
-      }
-   
       }
     }
   });
